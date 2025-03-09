@@ -4,7 +4,7 @@ import Link from "next/link";
 const thisYear = new Date().getFullYear();
 export default function Footer() {
   return (
-    <footer className="p-2 md:p-6 md:text-lg border-t flex items-center justify-between">
+    <footer className="p-2 md:p-6 md:text-lg border-t border-t-neutral-600 text-neutral-400 flex items-center justify-between">
       <p>&copy; kayode dev {thisYear}</p>
       <div className="items-center gap-4 hidden md:flex">
         <FooterLink
@@ -25,7 +25,7 @@ const FooterLink = ({ href, name }: FooterLinkProps) => {
   return (
     <Link
       href={href}
-      className="underline underline-offset-4 flex gap-2 items-center group"
+      className="underline underline-offset-4 flex gap-2 items-center group hover:text-white duration-300 transition-colors"
       target="_blank"
     >
       {name}

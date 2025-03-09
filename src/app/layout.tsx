@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Anonymous_Pro } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import Footer from "./components/footer";
-const anonymousPro = Anonymous_Pro({
-  weight: ["400", "700"],
+import { Navbar } from "./components/navbar";
+const inter = DM_Sans({
+  weight: ["300", "400", "500", "700"],
   style: ["normal", "italic"],
   subsets: ["latin"],
 });
@@ -21,8 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${anonymousPro.className} antialiased text-neutral-100 min-h-screen flex flex-col justify-between`}
+        className={`${inter.className} h-dvh antialiased text-neutral-300 !bg-neutral-950  flex flex-col justify-between`}
       >
+        <Navbar />
         {children}
         <Footer />
       </body>
