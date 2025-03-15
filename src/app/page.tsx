@@ -4,7 +4,7 @@ import gemini from "@/assets/google-gemini-icon.png";
 import Link from "next/link";
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center overflow-y-auto flex-1 p-3 md:p-8 gap-8 md:gap-20 sm:p-20">
+    <div className="flex flex-col items-center justify-center h-max flex-1 p-3 md:p-8 gap-8 md:gap-20 sm:p-20">
       <p className="text-lg md:text-3xl font-semibold">dualmind AI🤖</p>
       <div className="border-2 border-neutral-500 p-3 md:p-8 text-sm md:text-lg md:w-1/2 leading-loose ">
         <p>
