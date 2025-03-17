@@ -24,6 +24,7 @@ import { useMutation } from "@tanstack/react-query";
 import { generateChatGPTResponse, generateGeminiResponse } from "@/lib/action";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Markdown from "react-markdown";
 
 const promptSchema = z.object({
   prompt: z
@@ -219,10 +220,16 @@ export const PromptView = () => {
 const ChatThread = ({ from, response, totalTokenCount }: ChatHistoryType) => {
   return (
     <div>
-      <p>
-        <span className="font-bold">{from === "user" ? "Q" : "A"}:</span>{" "}
-        {response}
-      </p>
+      <div className="flex gap-2">
+        <p className="font-bold">{from === "user" ? "Q" : "A"}:</p>{" "}
+        {from === "user" ? (
+          <p>{response}</p>
+        ) : (
+          <div className="space-y-2">
+            <Markdown>{response}</Markdown>
+          </div>
+        )}
+      </div>
       {totalTokenCount && (
         <div className="flex gap-4">
           <p className="text-sm text-neutral-500">
