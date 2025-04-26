@@ -25,7 +25,6 @@ export const generateChatGPTResponse = async (prompt: string) => {
       },
     ],
   });
-  console.log(completion);
   return {
     response: completion.choices[0].message.content,
     tokenCount: completion.usage?.total_tokens,
@@ -37,7 +36,6 @@ export const generateGeminiResponse = async (prompt: string) => {
   const result = await model.generateContent(
     `You are competing with other AI models to provide the best answers to the prompts the user inputs: ${prompt}`
   );
-  console.log(result);
   return {
     response: result.response.text(),
     tokenCount: result.response.usageMetadata?.totalTokenCount,
