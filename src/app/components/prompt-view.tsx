@@ -30,8 +30,8 @@ const promptSchema = z.object({
       300,
       "This prompt is too long, prompts can have a maximum of 300 characters"
     ),
-  useGpt: z.boolean(),
-  useGemini: z.boolean(),
+  useGpt: z.boolean().default(false),
+  useGemini: z.boolean().default(false),
 });
 
 type PromptInputType = z.infer<typeof promptSchema>;
@@ -46,6 +46,8 @@ export const PromptView = () => {
     resolver: zodResolver(promptSchema),
     defaultValues: {
       prompt: "",
+      useGpt: false,
+      useGemini: false,
     },
   });
 
@@ -54,7 +56,9 @@ export const PromptView = () => {
     []
   );
 
-  const { mutate: mutateGPT, isPending: gptPending } = useMutation({
+  const [activeTab, setActivTab] = useState<"gpt" | "gemini">("gpt");
+
+  const { mutateAsync: mutateGPT, isPending: gptPending } = useMutation({
     mutationFn: generateChatGPTResponse,
     onSuccess: ({ response, tokenCount }) => {
       setGptChatHistory((prev) => [
@@ -68,7 +72,7 @@ export const PromptView = () => {
     },
   });
   const {
-    mutate: mutateGemini,
+    mutateAsync: mutateGemini,
     isPending: geminiPending,
     submittedAt,
   } = useMutation({
@@ -90,6 +94,7 @@ export const PromptView = () => {
     console.log(submittedAt);
     console.log(gptChatHistory);
     if (useGpt) {
+      if (!useGemini) setActivTab("gpt");
       setGptChatHistory((prev) => [
         ...prev,
         { from: "user", response: prompt },
@@ -97,6 +102,7 @@ export const PromptView = () => {
       mutateGPT(prompt);
     }
     if (useGemini) {
+      if (!useGpt) setActivTab("gemini");
       setGeminiChatHistory((prev) => [
         ...prev,
         { from: "user", response: prompt },
@@ -139,16 +145,25 @@ export const PromptView = () => {
             />
           </div>
           <Tabs
-            className="w-full relative flex flex-col h-[50vh] md:hidden"
-            defaultValue="gpt"
+            className="w-full relative flex flex-col max-h-[calc(100dvh-300px)] md:hidden"
+            defaultValue={activeTab}
+            value={activeTab}
           >
             <TabsList className="sticky top-0 z-20 bg-black/80 backdrop-blur-sm">
-              <TabsTrigger value="gpt">
+              <TabsTrigger
+                value="gpt"
+                onClick={() => {
+                  setActivTab("gpt");
+                }}
+              >
                 <GPTBadge />
               </TabsTrigger>
               <TabsTrigger
                 value="gemini"
                 className="data-[state=active]:bg-gradient-to-b data-[state=active]:from-light-purple/10 data-[state=active]:to-shiny-blue/10"
+                onClick={() => {
+                  setActivTab("gemini");
+                }}
               >
                 <GeminiBadge />
               </TabsTrigger>
@@ -287,7 +302,7 @@ const GptChatBox = ({
   pending: boolean;
 }) => {
   return (
-    <div className=" md:p-6 rounded-md md:border border-neutral-600 md:bg-neutral-800/50 md:h-[60vh] space-y-4 flex flex-col">
+    <div className=" md:p-6 rounded-md md:border border-neutral-600 md:bg-neutral-800/50 md:h-[56vh] space-y-4 flex flex-col">
       <div className="p-1 bg-neutral-950 w-max border border-neutral-600 hidden md:block rounded-lg">
         <GPTBadge />
       </div>
@@ -312,7 +327,7 @@ const GemimiChatBox = ({
   pending: boolean;
 }) => {
   return (
-    <div className="md:p-6 md:border border-neutral-800 md:bg-gradient-to-b from-light-purple/10 to-shiny-blue/10 md:h-[60vh] md:bg-black rounded-md space-y-4 flex flex-col">
+    <div className="md:p-6 md:border border-neutral-800 md:bg-gradient-to-b from-light-purple/10 to-shiny-blue/10 md:h-[56vh] md:bg-black rounded-md space-y-4 flex flex-col">
       <div className="p-1 bg-neutral-950 w-max border border-neutral-600 hidden md:block rounded-lg">
         <GeminiBadge />
       </div>
