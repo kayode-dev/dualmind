@@ -114,7 +114,7 @@ export const PromptView = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 h-full overflow-y-scroll w-full justify-between">
+    <div className="flex flex-col gap-4 h-full overflow-y-auto w-full justify-between">
       {gptChatHistory.length == 0 && geminiChatHistory.length === 0 ? (
         <div className="w-full max-w-3xl text-center h-full mx-auto flex flex-col gap-4 items-center justify-center">
           <p className="text-2xl md:text-4xl font-semibold">
