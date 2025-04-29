@@ -21,6 +21,7 @@ import openAi from "@/assets/openai-white-logomark.png";
 import gemini from "@/assets/google-gemini-icon.png";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 const promptSchema = z.object({
   prompt: z
@@ -46,8 +47,8 @@ export const PromptView = () => {
     resolver: zodResolver(promptSchema),
     defaultValues: {
       prompt: "",
-      useGpt: false,
-      useGemini: false,
+      useGpt: true,
+      useGemini: true,
     },
   });
 
@@ -70,12 +71,17 @@ export const PromptView = () => {
         },
       ]);
     },
+    onError: (err) => {
+      setGptChatHistory((prev) => [
+        ...prev,
+        {
+          from: "assistant",
+          response: err.message,
+        },
+      ]);
+    },
   });
-  const {
-    mutateAsync: mutateGemini,
-    isPending: geminiPending,
-    submittedAt,
-  } = useMutation({
+  const { mutateAsync: mutateGemini, isPending: geminiPending } = useMutation({
     mutationFn: generateGeminiResponse,
     onSuccess: ({ response, tokenCount }) => {
       setGeminiChatHistory((prev) => [
@@ -87,12 +93,19 @@ export const PromptView = () => {
         },
       ]);
     },
+    onError: (err) => {
+      setGeminiChatHistory((prev) => [
+        ...prev,
+        {
+          from: "assistant",
+          response: err.message,
+        },
+      ]);
+    },
   });
   const isPending = gptPending || geminiPending;
 
   const handleSubmit = ({ useGemini, useGpt, prompt }: PromptInputType) => {
-    console.log(submittedAt);
-    console.log(gptChatHistory);
     if (useGpt) {
       if (!useGemini) setActivTab("gpt");
       setGptChatHistory((prev) => [
@@ -114,9 +127,17 @@ export const PromptView = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 h-full overflow-y-auto w-full justify-between">
+    <div
+      className={cn(
+        "flex flex-col gap-4 h-full overflow-y-auto w-full justify-center ease-in duration-300",
+        {
+          "justify-between":
+            gptChatHistory.length > 0 || geminiChatHistory.length > 0,
+        }
+      )}
+    >
       {gptChatHistory.length == 0 && geminiChatHistory.length === 0 ? (
-        <div className="w-full max-w-3xl text-center h-full mx-auto flex flex-col gap-4 items-center justify-center">
+        <div className="w-full max-w-3xl text-center mb-10 mx-auto flex flex-col gap-4 items-center justify-center">
           <p className="text-2xl md:text-4xl font-semibold">
             Compare responses from{" "}
             <span className="inline-flex items-center gap-2 px-2 py-1 bg-neutral-900 rounded-md text-xs md:text-base w-max border border-neutral-700">
