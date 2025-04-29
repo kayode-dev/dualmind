@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "./components/footer";
 import { Navbar } from "./components/navbar";
 import { QueryProvider } from "./components/query-provider";
+import { PostHogProvider } from "./components/posthog-provider";
 const inter = DM_Sans({
   weight: ["300", "400", "500", "700"],
   style: ["normal", "italic"],
@@ -49,11 +50,13 @@ export default function RootLayout({
       <body
         className={`${inter.className} h-dvh antialiased text-neutral-300 !bg-neutral-950  flex flex-col justify-between`}
       >
-        <QueryProvider>
-          <Navbar />
-          {children}
-          <Footer />
-        </QueryProvider>
+        <PostHogProvider>
+          <QueryProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </QueryProvider>
+        </PostHogProvider>
       </body>
     </html>
   );
